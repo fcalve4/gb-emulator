@@ -2,16 +2,48 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct gb_cpu {
-    // Registers A-L
-    uint8_t a;
-    uint8_t b;
-    uint8_t c;
-    uint8_t d;
-    uint8_t e;
-    uint8_t f;
-    uint8_t g;
-    uint8_t h;
-    uint8_t l;
-
-};
+// Cinoop style registers struct using unions (https://cturt.github.io/cinoop.html)
+struct registers {
+	struct {
+		union {
+			struct {
+				unsigned char f;
+				unsigned char a;
+			};
+			unsigned short af;
+		};
+	};
+	
+	struct {
+		union {
+			struct {
+				unsigned char c;
+				unsigned char b;
+			};
+			unsigned short bc;
+		};
+	};
+	
+	struct {
+		union {
+			struct {
+				unsigned char e;
+				unsigned char d;
+			};
+			unsigned short de;
+		};
+	};
+	
+	struct {
+		union {
+			struct {
+				unsigned char l;
+				unsigned char h;
+			};
+			unsigned short hl;
+		};
+	};
+	
+	unsigned short sp;
+	unsigned short pc;
+} extern registers;
