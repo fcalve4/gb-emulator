@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Cinoop style registers struct using unions (https://cturt.github.io/cinoop.html)
 struct registers {
 	struct {
 		union {
