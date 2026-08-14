@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -46,3 +48,5 @@ struct registers {
 	unsigned short sp;
 	unsigned short pc;
 } extern registers;
+
+init_cpu();
