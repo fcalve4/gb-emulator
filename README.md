@@ -1,6 +1,6 @@
 # gb-emulator
 
-A Game Boy emulator written in C, using SDL2 for windowing and rendering.
+A Game Boy emulator written in C, using SDL2 for windowing and rendering. This emulator currently only supports 32KB ROMs without mappers (ex. Tetris).
 
 This project is being built from scratch as a learning exercise in emulation and C programming.
 

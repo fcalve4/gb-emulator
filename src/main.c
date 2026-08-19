@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <windows.h>
 
 #include "rom.h"
 #include "memory.h"
@@ -10,6 +11,10 @@
 #define HEIGHT 600
 
 int main(int argc, char *argv[]) {
+    AllocConsole();
+    freopen("CONOUT$", "w", stdout);
+    freopen("CONOUT$", "w", stderr);
+
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window *window = SDL_CreateWindow("gb-emulator",
@@ -18,11 +23,8 @@ int main(int argc, char *argv[]) {
     
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    
     // Grab the ROM and load it into memory map
-    long rom_size = 0;
-    uint8_t* rom_buffer = load_rom("roms/Tetris.gb", &rom_size);
-    load_into_memory(rom_buffer, rom_size);
+    uint8_t* rom_buffer = load_rom("roms/Tetris.gb");
     
     int running = 1;
     SDL_Event event;
