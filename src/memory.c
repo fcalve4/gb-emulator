@@ -1,11 +1,12 @@
 #include "memory.h"
 
 
-uint8_t memory[0x10000]; // 64KB address space
+uint8_t cart_memory[0x8000];
+uint8_t sram[0x2000];
+uint8_t io[0x100];
+uint8_t vram[0x2000];
+uint8_t oam[0x100];
+uint8_t wram[0x2000];
+uint8_t hram[0x80];
 
-void load_into_memory(uint8_t* rom_buffer, long rom_size) {
-    // simplest case: ROM <= 32KB, no bank switching needed yet
-    for (long i = 0; i < rom_size && i < 0x8000; i++) {
-        memory[i] = rom_buffer[i];
-    }
-}
+

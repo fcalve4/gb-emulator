@@ -1,4 +1,3 @@
-// rom.c
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,7 +5,8 @@
 
 #include "rom.h"
 
-uint8_t* load_rom(char* filename) {
+uint8_t* load_rom(char* filename, long* rom_size) {
+    
     FILE *rom = fopen(filename, "rb");
     if (rom == NULL) {
         printf("Failed to open ROM: %s\n", filename);
@@ -14,13 +14,14 @@ uint8_t* load_rom(char* filename) {
     }
 
     fseek(rom, 0, SEEK_END);
-    long rom_size = ftell(rom);
+    long size = ftell(rom);
     fseek(rom, 0, SEEK_SET);
 
-    uint8_t* buffer = malloc(rom_size);
+    uint8_t* buffer = malloc(size);
 
-    fread(buffer, 1, rom_size, rom);
+    fread(buffer, 1, size, rom);
     fclose(rom);
 
+    *rom_size = size;
     return buffer;
 }

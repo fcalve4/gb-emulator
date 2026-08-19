@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define ROM_NAME_OFFSET 0x134
 #define ROM_TYPE_OFFSET 0x147
 #define ROM_SIZE_OFFSET 0x148
@@ -32,4 +31,4 @@ enum rom_type {
 };
 
 
-uint8_t* load_rom(char* filename);
+uint8_t* load_rom(char* filename, long* rom_size);
