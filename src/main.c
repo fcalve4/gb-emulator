@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     // Grab the ROM and load it into memory map
-    uint8_t* rom_buffer = load_rom("roms/Tetris.gb");
+    load_rom("roms/Tetris.gb");
+
     
     int running = 1;
     SDL_Event event;

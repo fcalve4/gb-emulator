@@ -9,13 +9,13 @@
 
 
 
-uint8_t* load_rom(char* filename) {
+void load_rom(char* filename) {
 
     // OPEN THE ROM
     FILE *rom_file = fopen(filename, "rb");
     if (rom_file == NULL) {
         printf("Failed to open ROM: %s\n", filename);
-        return NULL;
+        return;
     }
 
     fseek(rom_file, 0, SEEK_END);
@@ -26,9 +26,9 @@ uint8_t* load_rom(char* filename) {
     // PARSE HEADER
     uint8_t header[0x180];
     char name[17];
-	int rom_type;
-	int rom_size;
-	int ram_size;
+	uint8_t rom_type;
+	uint8_t rom_size;
+	uint8_t ram_size;
 
     // Read in header
     fread(header, 0x180, 1, rom_file);
@@ -36,19 +36,35 @@ uint8_t* load_rom(char* filename) {
     // Read in name
     memset(name, '\0', 17);
     for(int i = 0; i < 15; i++) {
-        name[i] = header[i + ROM_NAME_OFFSET];
+        name[i] = header[i + 0x134];
     }
     name[15] = '\0'; // ensure null-terminated even if title used all 15 bytes
-    uint8_t cgbFlag = header[ROM_NAME_OFFSET + 15]; // 0x143, (not needed in basic implementation)
-    printf("ROM Name: %s", name);
+    uint8_t cgbFlag = header[143]; // 0x143, (not needed in basic implementation)
+    printf("ROM Name: %s\n", name);
 
-
+    rom_type = header[0x147];
+    rom_size = 32 * (1 << header[0x148]);
+    ram_size = header[0x149];
     
+    if (rom_type == 0x00) { // Exit if the ROM is not a plain 32KB ROM (no mappers)
+    printf("ROM Type: ROM ONLY\n");
+        
+    }
+    else {
+        printf("This ROM type is not supported\n");
+        fclose(rom_file);
+        return;
+    }
 
-    uint8_t* buffer = malloc(size);
+    if (rom_size != 32) {
+        printf("ROM must be 32KB\n");
+        fclose(rom_file);
+        return;
+    }
+    printf("ROM Size (KB): %d\n", rom_size);
 
-    fread(buffer, 1, size, rom_file);
+    // READ THE ROM INTO CART
+    fread(cart, 1, size, rom_file); 
+    
     fclose(rom_file);
-
-    return buffer;
 }
