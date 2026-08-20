@@ -1,46 +1,47 @@
 #pragma once
+#include <stdint.h>
 
 struct registers {
 	struct {
 		union {
 			struct {
-				unsigned char f;
-				unsigned char a;
+				uint8_t f;
+				uint8_t a;
 			};
-			unsigned short af;
+			uint16_t af;
 		};
 	};
 	
 	struct {
 		union {
 			struct {
-				unsigned char c;
-				unsigned char b;
+				uint8_t c;
+				uint8_t b;
 			};
-			unsigned short bc;
+			uint16_t bc;
 		};
 	};
 	
 	struct {
 		union {
 			struct {
-				unsigned char e;
-				unsigned char d;
+				uint8_t e;
+				uint8_t d;
 			};
-			unsigned short de;
+			uint16_t de;
 		};
 	};
 	
 	struct {
 		union {
 			struct {
-				unsigned char l;
-				unsigned char h;
+				uint8_t l;
+				uint8_t h;
 			};
-			unsigned short hl;
+			uint16_t hl;
 		};
 	};
 	
-	unsigned short sp;
-	unsigned short pc;
+	uint16_t sp;
+	uint16_t pc;
 } extern registers;
