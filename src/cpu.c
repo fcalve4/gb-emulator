@@ -6,6 +6,12 @@
 
 #include <stdint.h>
 
+#define FLAG_Z 0b10000000
+#define FLAG_N 0b01000000
+#define FLAG_H 0b00100000
+#define FLAG_C 0b00010000
+
+
 // Number of operand bytes following each opcode (0, 1, or 2)
 const uint8_t operand_lengths[256] = {
     0, 2, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 0, 1, 0,
@@ -46,8 +52,71 @@ void init() {
     registers.sp = 0xfffe;
     registers.pc = 0x100;
 }
+
+void set_flag(uint8_t flag) {
+    registers.f |= flag;
+}
+void clear_flag(uint8_t flag) {
+    registers.f &= ~flag;
+}
+int is_flag_set(uint8_t flag) {
+    return (registers.f & flag) != 0;
+}
+
 /**
- * Returns # of cycles 
+ * 8bit INC
+ */
+uint8_t inc8(uint8_t value) {
+    // Set Half Carry if low nybble overflows
+    if ((value & 0x0F) == 0x0F) { 
+        set_flag(FLAG_H);
+    }
+    else { 
+        clear_flag(FLAG_H);
+    }
+
+    value += 1;
+
+    if (value == 0) { 
+        set_flag(FLAG_Z); 
+    }
+    else {
+        clear_flag(FLAG_Z);
+    }
+
+    clear_flag(FLAG_N);
+    // C untouched
+
+    return value;
+}
+
+uint8_t dec8(uint8_t value) {
+    // Set Half Carry if low nybble overflows
+    if ((value & 0x0F)) { 
+        set_flag(FLAG_H);
+    }
+    else { 
+        clear_flag(FLAG_H);
+    }
+
+    value += 1;
+
+    if (value == 0) { 
+        set_flag(FLAG_Z); 
+    }
+    else {
+        clear_flag(FLAG_Z);
+    }
+
+    clear_flag(FLAG_N);
+    // C untouched
+
+    return value;
+}
+
+
+/**
+ * Returns # of M-cycles 
  */
 int step() {
 	uint8_t instruction;
@@ -70,9 +139,29 @@ int step() {
     switch (instruction) {
         case 0x00: // NOP
             return 1;
-        case 0x01: // LD bc, u16
+        case 0x01: // LD BC, n16
             registers.bc = operand;
             return 3;
+        case 0x02: // LD [BC], A
+            write_byte(registers.bc, registers.a);
+            return 2;
+        case 0x03: // INC BC
+            registers.bc++;
+            return 2;
+        case 0x04: // INC B
+            registers.b = inc8(registers.b);
+            return 1;
+        case 0x05: // DEC B
+            return 1;
+        case 0x06: // LD B, n8
+            registers.b = operand;
+            return 2;
+        case 0x07: // RLCA
+            return 1;
+        case 0x08: // LD [a16], SP
+            write_byte(operand, registers.sp & 0xFF);        // low byte of SP -> n16
+            write_byte(operand + 1, (registers.sp >> 8) & 0xFF); // high byte of SP -> n16 + 1
+            return 5;
         default:
             fprintf(stderr, "Unimplemented instruction: 0x%02X at 0x%04X\n", instruction, registers.pc - 1);
             exit(1);
