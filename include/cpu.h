@@ -6,4 +6,5 @@
 
 
 
-void init_cpu();
+void init();
+int step();

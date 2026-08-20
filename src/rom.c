@@ -28,23 +28,20 @@ void load_rom(char* filename) {
     char name[17];
 	uint8_t rom_type;
 	uint8_t rom_size;
-	uint8_t ram_size;
 
     // Read in header
     fread(header, 0x180, 1, rom_file);
 
-    // Read in name
     memset(name, '\0', 17);
     for(int i = 0; i < 15; i++) {
         name[i] = header[i + 0x134];
     }
     name[15] = '\0'; // ensure null-terminated even if title used all 15 bytes
-    uint8_t cgbFlag = header[143]; // 0x143, (not needed in basic implementation)
+    // uint8_t cgbFlag = header[143]; // 0x143, (not needed for tetris)
     printf("ROM Name: %s\n", name);
 
     rom_type = header[0x147];
     rom_size = 32 * (1 << header[0x148]);
-    ram_size = header[0x149];
     
     if (rom_type == 0x00) { // Exit if the ROM is not a plain 32KB ROM (no mappers)
     printf("ROM Type: ROM ONLY\n");
